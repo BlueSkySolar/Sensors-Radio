@@ -1,0 +1,930 @@
+<html>
+
+<head>
+<title>CSerialPort v1.03</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><strong><font
+face="Arial"><big><big><img border="0" src="serialport.gif" alt="serialport.gif" width="40" height="38"></big></big><font size="6">CSerialPort
+v1.03</font></font></strong></p>
+
+<p><font face="Arial" size="3">Welcome to CSerialPort, a freeware MFC class to wrap access
+to the Win32 APIs dealing with serial ports. </font></p>
+
+<p>&nbsp;</p>
+
+<table>
+<TBODY>
+  <tr>
+    <td><font face="Arial"><a href="#Features">Features</a></font></td>
+  </tr>
+  <tr>
+    <td><font face="Arial"><a href="#Usage">Usage</a></font></td>
+  </tr>
+  <tr>
+    <td><font face="Arial"><a href="#History">History</a></font></td>
+  </tr>
+  <tr>
+    <td><font face="Arial"><a href="#APIReference">API Reference</a></font></td>
+  </tr>
+  <tr>
+    <td><font face="Arial"><a href="#Enhancements">Planned Enhancements</a></font></td>
+  </tr>
+  <tr>
+    <td><font face="Arial"><a href="#Contact">Contacting the Author</a></font></td>
+  </tr>
+</TBODY>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><font face="Arial"><a name="Features"></a><big><strong><big>Features</big></strong></big>
+</font>
+
+<ul>
+  <li><font color="#000000" face="Arial" size="3">Simple and clean C++ interface. </font></li>
+  <li><font color="#000000" face="Arial" size="3">Uses C++ exceptions in preference to the
+    normal win32 return value mechanism. This ensures that code which uses CSerialPort is more
+    robust.</font> </li>
+  <li><font color="#000000" face="Arial" size="3">Unicode enabled, supports linking to MFC
+    statically and all code compiles cleanly at warning level 4.</font> </li>
+  <li><font color="#000000" face="Arial" size="3">Supports overlapped, blocking
+    and callback usage models of the serial port. (Callback is only supported on
+    NT).</font> </li>
+</ul>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><font face="Arial"><a name="Usage"></a><big><big><strong>Usage</strong></big></big></font>
+
+<ul>
+  <li><font color="#000000" face="Arial" size="3">To use the class in your code simply include
+    serialport.cpp in your project and #include serialport.h in which ever of your modules
+    needs to make calls to the class. </font></li>
+  <li><font face="Arial">To see the code in action have a look at the module
+    &quot;app.cpp&quot; in the sample app.</font> </li>
+</ul>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><font face="Arial"><big><a name="History"></a></big><font color="#000000" size="5"><strong>History</strong></font></font></p>
+
+<p><strong><font color="#000000" size="3" face="Arial">V1.0 (31st May 1999)</font></strong> 
+
+<ul>
+  <li><font color="#000000" face="Arial" size="3">Initial public release.</font> </li>
+</ul>
+
+<p><strong><font color="#000000" size="3" face="Arial">V1.01 (3rd June 1999)</font></strong> 
+
+<ul>
+  <li><font color="#000000" face="Arial" size="3">Fixed problem with code using CancelIo
+    function which does not exist on 95.</font></li>
+  <li><font color="#000000" face="Arial" size="3">Fixed leaks which can occur in sample app when an exception is thrown</font></li>
+</ul>
+
+<p><strong><font color="#000000" size="3" face="Arial">V1.02 (16th June 1999)</font></strong> 
+
+<ul>
+  <li><font face="Arial">Fixed a bug whereby CString::ReleaseBuffer was not being called in                             CSerialException::GetErrorMessage</font></li>
+</ul>
+
+<p><strong><font color="#000000" size="3" face="Arial">V1.03 (29th September 1999)</font></strong> 
+
+<ul>
+  <li><font face="Arial"> Fixed a simple copy and paste bug in CSerialPort::SetDTR</font></li>
+</ul>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><font face="Arial"><a name="APIReference"></a><big><big><strong>API
+Reference</strong></big></big></font></p>
+
+<p><font face="Arial">The API consists of the classes: CSerialException and the CSerialPort
+class. They have the following member functions and variables:</font></p>
+
+<p><font face="Arial"><strong><a href="#CSerialException">CSerialException::CSerialException</a><br>
+<a href="#GetErrorMessage">
+CSerialException::GetErrorMessage</a><br>
+<a href="#m_dwError">
+CSerialException::m_dwError</a><br>
+<a href="#CSerialPort">
+CSerialPort::CSerialPort</a><br>
+<a href="#~CSerialPort">CSerialPort::~CSerialPort</a><br>
+<a href="#Open">
+CSerialPort::Open</a><br>
+<a href="#Close">
+CSerialPort::Close</a><br>
+<a href="#Attach">
+CSerialPort::Attach</a><br>
+<a href="#Detach">
+CSerialPort::Detach</a><br>
+<a href="#operator HANDLE">
+CSerialPort::operator HANDLE()</a><br>
+<a href="#IsOpen">
+CSerialPort::IsOpen</a><br>
+<a href="#Dump">
+CSerialPort::Dump</a><br>
+<a href="#Read">
+CSerialPort::Read</a><br>
+<a href="#Read">
+CSerialPort::ReadEx</a><br>
+<a href="#Write">
+CSerialPort::Write</a><br>
+<a href="#Write">
+CSerialPort::WriteEx</a><br>
+<a href="#TransmitChar">
+CSerialPort::TransmitChar</a><br>
+<a href="#GetOverlappedResult">
+CSerialPort::GetOverlappedResult</a><br>
+<a href="#CancelIo">
+CSerialPort::CancelIo</a><br>
+<a href="#GetConfig">
+CSerialPort::GetConfig</a><br>
+<a href="#GetDefaultConfig">
+CSerialPort::GetDefaultConfig</a><br>
+<a href="#SetConfig">
+CSerialPort::SetConfig</a><br>
+<a href="#SetDefaultConfig">
+CSerialPort::SetDefaultConfig</a><br>
+<a href="#ClearBreak">
+CSerialPort::ClearBreak</a><br>
+<a href="#SetBreak">
+CSerialPort::SetBreak</a><br>
+<a href="#ClearError">
+CSerialPort::ClearError</a><br>
+<a href="#GetStatus">
+CSerialPort::GetStatus</a><br>
+<a href="#GetState">
+CSerialPort::GetState</a><br>
+<a href="#SetState">
+CSerialPort::SetState</a><br>
+<a href="#Escape">
+CSerialPort::Escape</a><br>
+<a href="#ClearDTR">
+CSerialPort::ClearDTR</a><br>
+<a href="#ClearRTS">
+CSerialPort::ClearRTS</a><br>
+<a href="#SetDTR">
+CSerialPort::SetDTR</a><br>
+<a href="#SetRTS">
+CSerialPort::SetRTS</a><br>
+<a href="#SetXOFF">
+CSerialPort::SetXOFF</a><br>
+<a href="#SetXON">
+CSerialPort::SetXON</a><br>
+<a href="#GetProperties">
+CSerialPort::GetProperties</a><br>
+<a href="#GetModemStatus">
+CSerialPort::GetModemStatus</a><br>
+<a href="#SetTimeouts">
+CSerialPort::SetTimeouts</a><br>
+<a href="#GetTimeouts">
+CSerialPort::GetTimeouts</a><br>
+<a href="#Set0Timeout">
+CSerialPort::Set0Timeout</a><br>
+<a href="#Set0WriteTimeout">
+CSerialPort::Set0WriteTimeout</a><br>
+<a href="#Set0ReadTimeout">
+CSerialPort::Set0ReadTimeout</a><br>
+<a href="#SetMask">CSerialPort::SetMask</a><br>
+<a href="#GetMask">
+CSerialPort::GetMask</a><br>
+<a href="#WaitEvent">
+CSerialPort::WaitEvent</a><br>
+<a href="#Flush">
+CSerialPort::Flush</a><br>
+<a href="#Purge">
+CSerialPort::Purge</a><br>
+<a href="#TerminateOutstandingWrites">
+CSerialPort::TerminateOutstandingWrites</a><br>
+<a href="#TerminateOutstandingReads">
+CSerialPort::TerminateOutstandingReads</a><br>
+<a href="#ClearWriteBuffer">
+CSerialPort::ClearWriteBuffer</a><br>
+<a href="#ClearReadBuffer">
+CSerialPort::ClearReadBuffer</a><br>
+<a href="#Setup">
+CSerialPort::Setup</a><br>
+<a href="#OnCompletion">
+CSerialPort::OnCompletion</a></strong></font></p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialException::CSerialException</font></b></p>
+<p><font face="Arial"><b><span class="op">CSerialException( DWORD </span></b><i><span class="p">dwError</span></i><span class="op"><i>
+</i><b>= 0);</b></span></font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>dwError</i></span>&nbsp;&nbsp;&nbsp;The
+error that caused the exception.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">This member function is called when a <span class="op">CSerialException</span>
+object is created. To throw a CSerialException, call the global function
+AfxThrowSerialException. If you call if using the default value for dwError,
+then internally it will call GetLastError for you.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialException::GetErrorMessage</font></b></p>
+<p><font face="Arial"><b><span class="op">virtual BOOL GetErrorMessage( LPTSTR </span></b><span class="p"><i>lpszError</i></span><b><span class="op">,
+UINT </span></b><span class="p"><i>nMaxError</i></span><b><span class="op">,
+PUINT </span></b><i><span class="p">pnHelpContext</span></i><span class="op"><i>
+</i><b>= NULL );<br>
+</b></span><b>CString GetErrorMessage();</b></font></p>
+<p><b><font face="Arial">Return Value</font></b></p>
+<p><font face="Arial">1) Nonzero if the function is successful; otherwise 0 if
+no error message text is available.</font></p>
+<p><font face="Arial">2) A CString representation of the error</font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>lpszError</i></span>&nbsp;&nbsp;&nbsp;A
+pointer to a buffer that will receive an error message.</font></p>
+<p><font face="Arial"><span class="p"><i>nMaxError</i></span>&nbsp;&nbsp;&nbsp;The
+maximum number of characters the buffer can hold, including the <span class="op">NULL</span>
+terminator.</font></p>
+<p><font face="Arial"><i><span class="p">pnHelpContext</span>&nbsp;</i>&nbsp;&nbsp;The
+address of a <span class="op">UINT</span> that will receive the help context ID.
+If <span class="op">NULL</span>, no ID will be returned.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Call this member function to provide text about an error
+that has occurred.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialException::m_dwError</font></b></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">The error that caused the exception. This error value is a
+system error code as found in WINERROR.H.</font></p>
+<p><font face="Arial">For a list of Win32 error codes, see Error Codes in the <span class="crbt">Win32
+SDK</span>.</font></p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::CSerialPort</font></b></p>
+<p><font face="Arial"><span class="op"><b>CSerialPort();</b></span></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Standard C++ constructor for the class. Internally it just
+sets up the member variables to default values.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::~CSerialPort</font></b></p>
+<p><font face="Arial"><span class="op"><b>~CSerialPort();</b></span></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Standard C++ destructor for the class. It will ensure that
+the comms port is closed if it is open.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialException::Open</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Open( </b></span><b>int </b><i>nPort</i><b>, DWORD
+</b><i>dwBaud </i><b>= 9600, Parity </b><i>parity </i><b>= NoParity, BYTE </b><i>DataBits
+</i><b>= 8,            StopBits </b><i>stopbits </i><b>= OneStopBit, FlowControl
+</b><i> fc</i><b> = NoFlowControl, BOOL </b><i>bOverlapped</i><b> = FALSE<span class="op">);<br>
+</span></b><span class="op"><b>&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>nPort</i></span>&nbsp;&nbsp;&nbsp;The
+communications port to open.</font></p>
+<p><font face="Arial"><i>dwBaud</i> The baud rate to use</font></p>
+<p><font face="Arial"><i>parity</i> The parity to use. parity is an enum with
+the following values:</font></p>
+<p><font face="Arial">
+enum Parity<br>
+{ <br>
+EvenParity,<br>
+MarkParity,<br>
+NoParity,<br>
+OddParity,<br>
+SpaceParity<br>
+};</font></p>
+<p><font face="Arial"><i>Databits</i> The number of data bits to use</font></p>
+<p><font face="Arial"><i>stopbits</i> The number of stop bits to use. stopbits
+is an enum with the following values:</font></p>
+
+<p><font face="Arial">
+enum StopBits<br>
+{<br>
+OneStopBit,<br>
+OnePointFiveStopBits,<br>
+TwoStopBits<br>
+};</font>
+</p>
+
+<p><font face="Arial"><i>fc</i> The flow control method to use. fc is an enum
+with the following values:</font></p>
+
+<p><font face="Arial">enum FlowControl<br>
+{<br>
+NoFlowControl,<br>
+CtsRtsFlowControl,<br>
+CtsDtrFlowControl,<br>
+DsrRtsFlowControl,<br>
+DsrDtrFlowControl,<br>
+XonXoffFlowControl<br>
+};</font>
+</p>
+
+<p><font face="Arial"><i>bOverlapped</i> TRUE if you want to open in overlapped
+mode, otherwise FALSE to use blocking calls.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Call this member function to open a communications port.
+Internally the class will use CreateFile to open the comms port (handling the
+case where the port number if greater than 9) and then uses SetState to set the
+various RS-232 settings as specified via the function parameters. If an error
+occurs, a CSerialException will be thrown.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Close</font></b></p>
+<p><font face="Arial"><span class="op"><b>Close();</b></span></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">The corollary function to Open. Just closes the comms port
+if already open.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Attach</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Attach(HANDLE </b><i>hComm</i><b>);</b></span></font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>hComm</i></span>&nbsp;&nbsp;&nbsp;The
+SDK handle of the open comms port.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Allows you to attach a CSerialPort instance to an existing
+SDK comms port handle. This function is similar in behavior to the
+CWnd::Attach function provided in MFC.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Detach</font></b></p>
+<p><font face="Arial"><span class="op"><b>HANDLE Detach();</b></span></font></p>
+<p><b><font face="Arial">Return Value</font></b></p>
+<p><font face="Arial">The SDK comms port HANDLE.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Corollary function to Attach. This function is similar in behavior
+to the CWnd::Detach function provided in MFC.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::operator
+HANDLE</font></b></p>
+<p><font face="Arial"><span class="op"><b>operator HANDLE();</b></span></font></p>
+<p><b><font face="Arial">Return Value</font></b></p>
+<p><font face="Arial">The SDK comms port HANDLE.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Use this operator to get the handle of the underlying
+comms port. You can use this handle to call the Windows APIs directly.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::IsOpen</font></b></p>
+<p><font face="Arial"><span class="op"><b>BOOL IsOpen() const</b></span></font></p>
+<p><b><font face="Arial">Return Value</font></b></p>
+<p><font face="Arial">TRUE if the comms port is open otherwise FALSE</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Dump</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Dump(CDumpContext&amp; </b><i>dc</i><b>) const</b></span></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Standard MFC diagnostic support function</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Read \ ReadEx</font></b></p>
+<p><font face="Arial"><b>
+DWORD Read(void* </b><i>lpBuf</i><b>, DWORD </b><i>dwCount</i><b>);<br>
+BOOL Read(void* </b><i>lpBuf</i><b>, DWORD </b><i>dwCount</i><b>, OVERLAPPED&amp;
+</b><i>overlapped</i><b>);<br>
+void ReadEx(void* </b><i>lpBuf</i><b>, DWORD </b><i>dwCount</i><b>);<br>
+</b><span class="op"><b>&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Return Value</font></b></p>
+<p><font face="Arial">1) The number of bytes read.</font></p>
+<p><font face="Arial">2)&nbsp;TRUE if the overlapped read completely
+synchronously, FALSE if the operation is to be completed asynchronously.</font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>lpBuf</i></span>&nbsp;&nbsp;Points to
+the buffer to read the data into from the serial port</font></p>
+<p><font face="Arial"><span class="p"><i>dwCount</i></span>&nbsp;&nbsp;Specifies
+the number of bytes to read from the serial port.</font></p>
+<p><font face="Arial"><i><span class="p">overlapped</span></i>&nbsp;&nbsp;reference
+to an OVERLAPPED structure. This is required if the port was opened in
+overlapped mode.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">These 3 functions are wrappers for the SDK calls ReadFile
+and ReadFileEx. The 2nd version of Read is the overlapped version.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Write \
+WriteEx</font></b></p>
+<p><font face="Arial"><b>
+DWORD Write(const void* </b><i>lpBuf</i><b>, DWORD </b><i>dwCount</i><b>);<br>
+BOOL Write(const void* </b><i>lpBuf</i><b>, DWORD </b><i>dwCount</i><b>, OVERLAPPED&amp;
+</b><i>overlapped</i><b>);<br>
+void WriteEx(const void* </b><i>lpBuf</i><b>, DWORD </b><i>dwCount</i><b>);<br>
+</b><span class="op"><b>&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Return Value</font></b></p>
+<p><font face="Arial">1) The number of bytes written.</font></p>
+<p><font face="Arial">2)&nbsp;TRUE if the overlapped write completely
+synchronously, FALSE if the operation is to be completed asynchronously.</font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>lpBuf</i></span>&nbsp;&nbsp;Points to
+the buffer containing the data to be written to the serial port</font></p>
+<p><font face="Arial"><span class="p"><i>dwCount</i></span>&nbsp;&nbsp;Specifies
+the number of bytes to write to the serial port.</font></p>
+<p><font face="Arial"><i><span class="p">overlapped</span></i>&nbsp;&nbsp;reference
+to an OVERLAPPED structure. This is required if the port was opened in
+overlapped mode.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">These 3 functions are wrappers for the SDK calls WriteFile
+and WriteFileEx. The 2nd version of Write is the overlapped version.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::TransmitChar</font></b></p>
+<p><font face="Arial"><span class="op"><b>void TransmitChar(char </b><i>cChar</i><b>) const<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the TransmitCommChar SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetOverlappedResult</font></b></p>
+<p><font face="Arial"><span class="op"><b>void
+GetOverlappedResult(OVERLAPPED&amp; </b><i>overlapped</i><b>, DWORD&amp; </b><i>dwBytesTransferred</i><b>,
+BOOL </b><i>bWait</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetOverlappedResult SDK function
+call. See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::CancelIo</font></b></p>
+<p><font face="Arial"><span class="op"><b>void CancelIo()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the CancelIo SDK function call. See the
+Win32 SDK documentation for further details. Please note that this function is
+only available on NT 4 or Windows 98 or later. In version 1.0 of CSerialPort,
+this would cause code developed with it to fail to load on Windows 95 with an
+error about a missing export. This problem has been rectified in v1.01 of
+CSerialPort.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetConfig</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetConfig(COMMCONFIG&amp; </b><i>config</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommConfig SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetDefaultConfig</font></b></p>
+<p><font face="Arial"><span class="op"><b>static void GetDefaultConfig(int </b><i>nPort</i><b>,
+COMMCONFIG&amp; </b><i>config</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetDefaultCommConfig SDK function
+call. See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetConfig</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetConfig(COMMCONFIG&amp; </b><i>config</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetCommConfig SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetDefaultConfig</font></b></p>
+<p><font face="Arial"><span class="op"><b>static void SetDefaultConfig(int </b><i>nPort</i><b>,
+COMMCONFIG&amp; </b><i>config</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetDefaultCommConfig SDK function
+call. See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::ClearBreak</font></b></p>
+<p><font face="Arial"><span class="op"><b>void ClearBreak()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the ClearCommBreak SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetBreak</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetBreak()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetCommBreak SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::ClearError</font></b></p>
+<p><font face="Arial"><span class="op"><b>void ClearError(DWORD&amp; </b><i>dwErrors</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the ClearCommError SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetStatus</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetStatus(COMMSTAT&amp; </b><i>stat</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommStatus SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetState</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetState(DCB&amp; </b><i>dcb</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommState SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetState</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetState(DCB&amp; </b><i>dcb</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetCommState SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Escape</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Escape(DWORD </b><i>dwFunc</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the EscapeCommFunction SDK function
+call. See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::ClearDTR</font></b></p>
+<p><font face="Arial"><span class="op"><b>void ClearDTR()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Escape function using the constant CLRDTR which
+lowers the DTR line.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::ClearRTS</font></b></p>
+<p><font face="Arial"><span class="op"><b>void ClearRTS()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Escape function using the constant CLRRTS which
+lowers the RTS line.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetDTR</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetDTR()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Escape function using the constant SETDTR which
+raises the DTR line.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetRTS</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetRTS()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Escape function using the constant SETRTS which
+raises the RTS line.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetXOFF</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetXOFF()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Escape function using the constant SETXOFF which
+causes transmission to act as if an XOFF character has been received..</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetXON</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetXON()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Escape function using the constant SETXON which
+causes transmission to act as if an XON character has been received..</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetProperties</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetProperties(COMMPROP&amp; </b><i>properties</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommProperties SDK function
+call. See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetModemStatus</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetModemStatus(DWORD&amp; </b><i>dwModemStatus</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommModemStatus SDK function
+call. See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetTimeouts</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetTimeouts(COMMTIMEOUTS&amp; </b><i>timeouts</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetCommTimeouts SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetTimeouts</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetTimeouts(COMMTIMEOUTS&amp; </b><i>timeouts</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommTimeouts SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Set0Timeout</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Set0Timeout()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Configure both send and receive timeouts to be 0. This
+cause writes to return immediately and for reads to return with whatever data is
+waiting in the receive buffer rather than wait for the specified amount of bytes
+to arrive.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Set0WriteTimeout</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Set0WriteTimeout()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Configures the send timeouts to be 0. This cause writes to
+return immediately.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Set0ReadTimeout</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Set0ReadTimeout()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Configure the receive timeout to be 0. This cause reads to
+return with whatever data is waiting in the receive buffer rather than wait for
+the specified amount of bytes to arrive.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::SetMask</font></b></p>
+<p><font face="Arial"><span class="op"><b>void SetMask(DWORD </b><i>dwMask</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetCommMask SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::GetMask</font></b></p>
+<p><font face="Arial"><span class="op"><b>void GetMask(DWORD&amp; </b><i>dwMask</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the GetCommMask SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::WaitEvent</font></b></p>
+<p><font face="Arial"><span class="op"><b>void WaitEvent(DWORD&amp; </b><i>dwMask</i><b>)<br>
+void WaitEvent(DWORD&amp; </b><i>dwMask</i><b>, OVERLAPPED&amp; </b><i>overlapped</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the WaitCommEvent SDK function call.
+The second version of WaitEvent is the overlapped version which will return
+immediately and you can wait for the manual reset event member of the OVERLAPPED
+structure to become signaled in your code. See the Win32 SDK documentation for
+further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Flush</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Flush()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the FlushFileBuffers SDK function call.
+See the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Purge</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Purge(DWORD </b><i>dwFlags</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the PurgeComm SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::TerminateOutstandingWrites</font></b></p>
+<p><font face="Arial"><span class="op"><b>void TerminateOutstandingWrites()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Purge function using the constant PURGE_TXABORT
+which terminates all outstanding write operations and returns immediately, even
+if the write operations have not been completed.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::TerminateOutstandingReads</font></b></p>
+<p><font face="Arial"><span class="op"><b>void TerminateOutstandingReads()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Purge function using the constant PURGE_RXABORT
+which terminates all outstanding read operations and returns immediately, even
+if the read operations have not been completed.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::ClearWriteBuffer</font></b></p>
+<p><font face="Arial"><span class="op"><b>void ClearWriteBuffer()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Purge function using the constant PURGE_TXCLEAR
+which clears the output buffer (if the device driver has one)..</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::ClearReadBuffer</font></b></p>
+<p><font face="Arial"><span class="op"><b>void ClearReadBuffer()<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Calls the Purge function using the constant PURGE_RXCLEAR
+which clears the input buffer (if the device driver has one)..</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::Setup</font></b></p>
+<p><font face="Arial"><span class="op"><b>void Setup(DWORD </b><i>dwInQueue, </i><b>DWORD
+</b><i>dwOutQueue</i><b>)<br>
+&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">Simple wrapper for the SetupComm SDK function call. See
+the Win32 SDK documentation for further details.</font></p>
+
+<p>&nbsp;</p>
+
+<p><b><font face="Arial" size="4">CSerialPort::OnCompletion</font></b></p>
+<p><font face="Arial"><span class="op"><b>virtual void OnCompletion(DWORD</b></span><b>
+</b><i>dwErrorCode</i><b>, DWORD </b><i>dwCount</i><b>, LPOVERLAPPED </b><i>lpOverlapped</i><b><span class="op">);<br>
+</span></b><span class="op"><b>&nbsp;&nbsp;&nbsp;</b></span> <b><span class="op">throw(</span>
+<span class="op">CSerialException</span> <span class="op">);</span></b></font></p>
+<p><b><font face="Arial">Parameters</font></b></p>
+<p><font face="Arial"><span class="p"><i>dwErrorCode</i></span>&nbsp;&nbsp;</font></p>
+<p><font face="Arial">Specifies the I/O completion status. This parameter may be
+one of the following values:</font></p>
+<table width="582">
+  <tbody>
+    <tr vAlign="top">
+      <td width="151">
+        <p><b><font size="2" face="Arial">Value</font></b></p>
+      <td width="417">
+        <p><b><font size="2" face="Arial">Meaning</font></b></p>
+    <tr vAlign="top">
+      <td width="151">
+        <p><font size="2" face="Arial">0</font></p>
+      <td width="417">
+        <p><font size="2" face="Arial">The I/O was successful.</font></p>
+    <tr vAlign="top">
+      <td width="151">
+        <p><font size="2" face="Arial">ERROR_HANDLE_EOF</font></p>
+      <td width="417">
+        <p><font size="2" face="Arial">The ReadFileEx function tried to read
+        past the end of the file.</font></p>
+    </tr>
+  </tbody>
+</table>
+<p><font face="Arial"><i>dwCount</i> Specifies the number of bytes transferred.
+If an error occurs, this parameter is zero</font></p>
+
+<p><font face="Arial"><i>lpOverlapped</i>  Points to the OVERLAPPED structure
+specified by the asynchronous I/O function.</font></p>
+<p><b><font face="Arial">Remarks</font></b></p>
+<p><font face="Arial">This function is called as the completion routine for any asynchronous calls
+to WriteEx or ReadEx. In your derived class from CSerialPort, you can override
+this function to perform your own specific code in reaction to an asynchronous
+call completing. Don't forget to call the parent version namely this function
+&quot;CSerialPort::OnCompletion&quot; as it handles the cleanup of the memory
+allocated for the lpOverlapped parameter.</font></p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><font face="Arial"><big><a name="Enhancements"></a></big><font color="#000000" size="4"><strong>PLANNED
+ENHANCEMENTS</strong></font> </font>
+
+<ul>
+  <li><font face="Arial">Provide a better sample app. At the moment, it's very much a test
+    program which tests all of the functions.</font> </li>
+  <li><font color="#000000" face="Arial" size="3">If you have any other suggested
+    improvements, please let me know so that I can incorporate them into the next release.</font>
+  </li>
+</ul>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><font face="Arial"><a name="Contact"></a><font color="#000000" size="4"><strong>CONTACTING
+THE AUTHOR</strong></font></font></p>
+
+<p><font color="#000000" face="Arial" size="3">PJ Naughter<br>
+Email: <a href="mailto:pjn@indigo..ie">pjn@indigo.ie</a><br>
+Web: <a href="http://indigo.ie/~pjn">http://indigo.ie/~pjn</a><br>
+29th September 1999</font></p>
+</body>
+</html>
