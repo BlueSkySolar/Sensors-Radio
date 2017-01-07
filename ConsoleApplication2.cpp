@@ -27,7 +27,7 @@
 #define MESSAGE_LENGTH 100
 
 // Declare variables and structures
-HANDLE hSerial = INVALID_HANDLE_VALUE;
+HANDLE hSerialRead = INVALID_HANDLE_VALUE;
 DCB dcbSerialParams = { 0 };
 COMMTIMEOUTS timeouts = { 0 };
 DWORD dwBytesWritten = 0;
@@ -40,13 +40,25 @@ int simulate_keystrokes = 0;
 int debug = 1; // print some info by default
 int id = -1;
 
+HANDLE hSerialWrite = INVALID_HANDLE_VALUE;
+DCB dcbSerialParamsWrite = { 0 };
+COMMTIMEOUTS timeoutsWrite = { 0 };
+
 void CloseSerialPort()
 {
-	if (hSerial != INVALID_HANDLE_VALUE)
+	if (hSerialRead != INVALID_HANDLE_VALUE)
 	{
 		// Close serial port
 		fprintf(stderr, "\nClosing serial port...");
-		if (CloseHandle(hSerial) == 0)
+		if (CloseHandle(hSerialRead) == 0)
+			fprintf(stderr, "Error\n");
+		else fprintf(stderr, "OK\n");
+	}
+	if (hSerialWrite != INVALID_HANDLE_VALUE)
+	{
+		// Close serial port
+		fprintf(stderr, "\nClosing serial port...");
+		if (CloseHandle(hSerialWrite) == 0)
 			fprintf(stderr, "Error\n");
 		else fprintf(stderr, "OK\n");
 	}
@@ -61,16 +73,7 @@ void exit_message(const char* error_message, int error)
 	// Exit the program
 	exit(error);
 }
-/*
-typedef struct tagINPUT {
-	DWORD type;
-	union {
-		MOUSEINPUT    mi;
-		KEYBDINPUT    ki;
-		HARDWAREINPUT hi;
-	};
-} INPUT, *PINPUT;
-*/
+
 void simulate_keystroke(char c)
 {
 	// This structure will be used to create the keyboard
@@ -188,9 +191,11 @@ int main(int argc, char *argv[])
 		// Try next device
 		sprintf(Ldev_name, "\\\\.\\COM%d", n);
 		if (debug > 1) fprintf(stderr, "Trying %s...", Ldev_name);
-		hSerial = CreateFileA(_T(dev_name), GENERIC_READ | GENERIC_WRITE, 0, 0,
+		hSerialRead = CreateFileA(_T(dev_name), GENERIC_READ | GENERIC_WRITE, 0, 0,
 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-		if (hSerial != INVALID_HANDLE_VALUE)
+		hSerialWrite = CreateFileA(_T(dev_name), GENERIC_READ | GENERIC_WRITE, 0, 0,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		if (hSerialRead != INVALID_HANDLE_VALUE && hSerialWrite!=INVALID_HANDLE_VALUE)
 		{
 			if (debug > 1) fprintf(stderr, "OK\n");
 			dev_number = n;
@@ -198,10 +203,13 @@ int main(int argc, char *argv[])
 		}
 		else if (debug > 1) fprintf(stderr, "FAILED\n");
 	}
-
+	
 	// Check in case no serial port could be opened
-	if (hSerial == INVALID_HANDLE_VALUE)
-		exit_message("Error: could not open serial port", 1);
+	if (hSerialRead == INVALID_HANDLE_VALUE)
+		exit_message("Error: could not open read serial port", 1);
+	//Check if write Serial port could not be opened 
+	if (hSerialWrite == INVALID_HANDLE_VALUE)
+		exit_message("Error: could not open write serial port", 1);
 
 	// If we get this far, a serial port was successfully opened
 	if (debug) fprintf(stderr, "Opening COM%d at %d baud\n\n", dev_number, baudrate);
@@ -209,14 +217,33 @@ int main(int argc, char *argv[])
 	// Set device parameters:
 	//  baudrate (default 2400), 1 start bit, 1 stop bit, no parity
 	dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
-	if (GetCommState(hSerial, &dcbSerialParams) == 0)
-		exit_message("Error getting device state", 1);
+	dcbSerialParamsWrite.DCBlength = sizeof(dcbSerialParamsWrite);
+
+	if (GetCommState(hSerialRead, &dcbSerialParams) == 0) {
+		fprintf(stderr, "Error getting device state\n");
+		CloseHandle(hSerialRead);
+		return 1;	
+	}
+	if (GetCommState(hSerialWrite, &dcbSerialParamsWrite) == 0) {
+		fprintf(stderr, "Error getting device state\n");
+		CloseHandle(hSerialWrite);
+		return 1;
+	}
+	
+	dcbSerialParamsWrite.BaudRate = CBR_19200; 
+	dcbSerialParams.ByteSize = 8;
+	dcbSerialParams.StopBits = ONESTOPBIT;
+	dcbSerialParams.Parity = NOPARITY;
+
 	dcbSerialParams.BaudRate = baudrate;
 	dcbSerialParams.ByteSize = 8;
 	dcbSerialParams.StopBits = ONESTOPBIT;
 	dcbSerialParams.Parity = NOPARITY;
-	if (SetCommState(hSerial, &dcbSerialParams) == 0)
-		exit_message("Error setting device parameters", 1);
+
+	if (SetCommState(hSerialRead, &dcbSerialParams) == 0)
+		exit_message("Error setting device parameters while reading", 1);
+	if (SetCommState(hSerialWrite, &dcbSerialParamsWrite) == 0)
+		exit_message("Error setting device parameters while writing", 1);
 
 	// Set COM port timeout settings
 	timeouts.ReadIntervalTimeout = 50;
@@ -224,16 +251,39 @@ int main(int argc, char *argv[])
 	timeouts.ReadTotalTimeoutMultiplier = 10;
 	timeouts.WriteTotalTimeoutConstant = 50;
 	timeouts.WriteTotalTimeoutMultiplier = 10;
-	if (SetCommTimeouts(hSerial, &timeouts) == 0)
-		exit_message("Error setting timeouts", 1);
-
+	if (SetCommTimeouts(hSerialRead, &timeouts) == 0)
+		exit_message("Error setting timeouts while reading", 1);
+	if (SetCommTimeouts(hSerialWrite, &timeouts) == 0)
+		exit_message("Error setting timeouts while writing", 1);
 	// Read text and print to console (and maybe simulate keystrokes)
 	int state = 1;
 	//int i;
 	char c;
 	char message_buffer[MESSAGE_LENGTH];
 	DWORD bytes_read;
+	//Variables to write 
+	DWORD bytes_written, total_bytes_written = 0;
+	//For testing Purposes 
+	char bytes_to_send[5] = { 104,101,108,108,111 };
+	//char* bytes_to_send;
+	//Take the size of bytes to send and ask for user to input 
+	fprintf(stderr, "Sending bytes...");
+	if (!WriteFile(hSerialWrite, bytes_to_send, 5, &bytes_written, NULL))
+	{
+		fprintf(stderr, "Error\n");
+		CloseHandle(hSerialWrite);
+		return 1;
+	}
+	fprintf(stderr, "%d bytes written\n", bytes_written);
 
+	// Close serial port
+	fprintf(stderr, "Closing serial port...");
+	if (CloseHandle(hSerialWrite) == 0)
+	{
+		fprintf(stderr, "Error\n");
+		return 1;
+	}
+	fprintf(stderr, "OK\n");
 	// Depending on whether a robot id has been specified, either
 	// print all incoming characters to the console or filter by
 	// the specified id number
@@ -242,7 +292,7 @@ int main(int argc, char *argv[])
 		// No robot id specified - print everything to console
 		while (1)
 		{
-			ReadFile(hSerial, &c, 1, &bytes_read, NULL);
+			ReadFile(hSerialRead, &c, 1, &bytes_read, NULL);
 			if (bytes_read == 1)
 			{
 				printf("%c", c);
@@ -258,7 +308,7 @@ int main(int argc, char *argv[])
 		while (1)
 		{
 			// Read next character
-			ReadFile(hSerial, &c, 1, &bytes_read, NULL);
+			ReadFile(hSerialRead, &c, 1, &bytes_read, NULL);
 			if (bytes_read != 1) continue;
 
 			if (state == 1)
